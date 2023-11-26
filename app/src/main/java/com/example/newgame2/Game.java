@@ -5,12 +5,15 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Paint;
-import androidx.core.content.ContextCompat;
+import android.util.Log;
+import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
+import androidx.core.content.ContextCompat;
 
 public class Game extends SurfaceView implements SurfaceHolder.Callback {
     private final Player player;
+    private final Joystick joystick;
     private GameLoop gameLoop;
     private Context context;
     public Game(Context context) {
@@ -21,10 +24,31 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
 
         this.context = context;
         this.gameLoop = new GameLoop(this, surfaceHolder);
-        this.player = new Player(context,650,773);
+        this.joystick = new Joystick(200,900,70,40);
+        this.player = new Player(getContext(),0,0);
         setFocusable(true); //events are dispatched to the focused component
     }
 
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        switch(event.getAction()) {
+            case MotionEvent.ACTION_DOWN:
+                if (joystick.isPressed((double) event.getX(), (double) event.getY())) {
+                    joystick.setIsPressed(true);
+                }
+                return true; //event has been handled
+            case MotionEvent.ACTION_MOVE:
+                if(joystick.getIsPressed()) {
+                    joystick.setActuator((double)event.getX(),(double)event.getY());
+                }
+                return true;
+            case MotionEvent.ACTION_UP:
+                joystick.setIsPressed(false);
+                joystick.resetActuator();
+                return true;
+        }
+        return super.onTouchEvent(event);
+    }
     @Override
     public void surfaceCreated(SurfaceHolder holder) {
         gameLoop.startLoop();
@@ -46,6 +70,7 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
         drawUPS(canvas);
         drawFPS(canvas);
         this.player.draw(canvas);
+        this.joystick.draw(canvas);
     }
     public void drawUPS(Canvas canvas) {
         String averageUPS = Double.toString(gameLoop.getAverageUPS());
@@ -54,7 +79,7 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
         paint.setColor(color);
         paint.setTextSize(50);
         canvas.drawText( "UPS: " + averageUPS, 100, 100, paint);
-        Bitmap playerBitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.gardevoir);
+        Bitmap playerBitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.gard);
         canvas.drawText("getWidth " + playerBitmap.getHeight(), 100,300,paint);
     }
     public void drawFPS(Canvas canvas) {
@@ -67,6 +92,7 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
     }
 
     public void update() {
-        player.update();
+        joystick.update();
+        player.update(joystick);
     }
 }
