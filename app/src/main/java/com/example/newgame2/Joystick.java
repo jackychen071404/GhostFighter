@@ -29,7 +29,7 @@ public class Joystick {
         outerPaint.setColor(Color.GRAY);
         outerPaint.setStyle(Paint.Style.FILL_AND_STROKE);
         innerPaint = new Paint();
-        innerPaint.setColor(Color.BLUE);
+        innerPaint.setColor(Color.WHITE);
         innerPaint.setStyle(Paint.Style.FILL_AND_STROKE);
 
 

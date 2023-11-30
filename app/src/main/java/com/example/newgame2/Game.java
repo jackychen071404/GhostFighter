@@ -14,6 +14,7 @@ import androidx.core.content.ContextCompat;
 public class Game extends SurfaceView implements SurfaceHolder.Callback {
     private final Player player;
     private final Joystick joystick;
+    private final Enemy enemy;
     private GameLoop gameLoop;
     private Context context;
     public Game(Context context) {
@@ -25,7 +26,8 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
         this.context = context;
         this.gameLoop = new GameLoop(this, surfaceHolder);
         this.joystick = new Joystick(200,900,70,40);
-        this.player = new Player(getContext(),0,0);
+        this.player = new Player(getContext(),joystick,0,0);
+        this.enemy = new Enemy(getContext(),player,0,0);
         setFocusable(true); //events are dispatched to the focused component
     }
 
@@ -71,6 +73,7 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
         drawFPS(canvas);
         this.player.draw(canvas);
         this.joystick.draw(canvas);
+        this.enemy.draw(canvas);
     }
     public void drawUPS(Canvas canvas) {
         String averageUPS = Double.toString(gameLoop.getAverageUPS());
@@ -93,6 +96,7 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
 
     public void update() {
         joystick.update();
-        player.update(joystick);
+        player.update();
+        enemy.update();
     }
 }

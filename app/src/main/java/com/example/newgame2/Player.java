@@ -7,17 +7,17 @@ import android.graphics.Canvas;
 import android.graphics.Rect;
 import android.util.Log;
 
-public class Player {
+//MAIN CHARACTER OF GAME, PLAYER IS EXTENSION OF GameObject
+public class Player extends GameObject{
     private static final double max_speed = 400.0/GameLoop.MAX_UPS; //pixels per second/max_UPS
-    private double y;
-    private double x;
+    private final Joystick joystick;
     private Bitmap playerBitmap; //this stores images
     private Rect playerRect;
-    private double velocityX;
-    private double velocityY;
-    public Player(Context context, int x, int y) {
-        this.x = x;
-        this.y = y;
+
+    public Player(Context context, Joystick joystick, int x, int y) {
+        super(x, y);
+        this.joystick = joystick;
+
         //get the image of the player
         playerBitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.gard);
         if (playerBitmap == null) {
@@ -25,16 +25,22 @@ public class Player {
         }
         playerRect = new Rect(x, y, x+playerBitmap.getWidth(), y+playerBitmap.getHeight());
     }
-    public void draw(Canvas canvas) {
-        canvas.drawBitmap(playerBitmap, null, playerRect, null);
-    }
 
-    public void update(Joystick joystick) {
+    public void update() {
+        //update velocity based on joystick
         velocityX = joystick.getActuatorX()*max_speed;
         velocityY = joystick.getActuatorY()*max_speed;
+
+        //update position
         x += velocityX;
         y += velocityY;
+
+        //set new position
         this.setPosition(x,y);
+    }
+
+    public void draw(Canvas canvas) {
+        canvas.drawBitmap(playerBitmap, null, playerRect, null);
     }
 
     public void setPosition(double x, double y) {
