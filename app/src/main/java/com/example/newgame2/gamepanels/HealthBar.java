@@ -1,8 +1,10 @@
-package com.example.newgame2;
+package com.example.newgame2.gamepanels;
 
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+
+import com.example.newgame2.gameobjects.Player;
 
 //HealthBar shows health bar
 public class HealthBar {

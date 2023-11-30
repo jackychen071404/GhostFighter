@@ -1,4 +1,4 @@
-package com.example.newgame2;
+package com.example.newgame2.gameobjects;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -7,9 +7,12 @@ import android.graphics.Canvas;
 import android.graphics.Rect;
 import android.util.Log;
 
+import com.example.newgame2.GameLoop;
+import com.example.newgame2.R;
+
 //Enemy is an extension of GameObject
-public class Enemy extends GameObject{
-    private static final double max_speed = 200.0/GameLoop.MAX_UPS; //pixels per second/max_UPS
+public class Enemy extends GameObject {
+    private static final double max_speed = 200.0/ GameLoop.MAX_UPS; //pixels per second/max_UPS
     private final Player player;    //to use as reference for Player distance
     private Bitmap enemyBitmap;     //stores image
     private Rect enemyRect;

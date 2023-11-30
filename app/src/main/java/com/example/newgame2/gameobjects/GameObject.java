@@ -1,4 +1,4 @@
-package com.example.newgame2;
+package com.example.newgame2.gameobjects;
 
 import android.graphics.Canvas;
 

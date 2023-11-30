@@ -5,11 +5,15 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Paint;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import androidx.core.content.ContextCompat;
+
+import com.example.newgame2.gameobjects.Enemy;
+import com.example.newgame2.gameobjects.Player;
+import com.example.newgame2.gamepanels.GameOver;
+import com.example.newgame2.gamepanels.Joystick;
 
 public class Game extends SurfaceView implements SurfaceHolder.Callback {
     private final Player player;
@@ -17,6 +21,8 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
     private final Enemy enemy;
     private GameLoop gameLoop;
     private Context context;
+    private GameOver gameOver;
+
     public Game(Context context) {
         super(context);
 
@@ -25,9 +31,15 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
 
         this.context = context;
         this.gameLoop = new GameLoop(this, surfaceHolder);
+
+        //initialize game panels (for UI)
+        this.gameOver = new GameOver();
         this.joystick = new Joystick(200,900,70,40);
+
+        //initialize game objects
         this.player = new Player(getContext(),joystick,0,0);
         this.enemy = new Enemy(getContext(),player,0,0);
+
         setFocusable(true); //events are dispatched to the focused component
     }
 
@@ -57,24 +69,44 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
     }
 
     @Override
-    public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
-
-    }
+    public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {}
 
     @Override
-    public void surfaceDestroyed(SurfaceHolder holder) {
-
-    }
+    public void surfaceDestroyed(SurfaceHolder holder) {}
 
     @Override
     public void draw(Canvas canvas) {
         super.draw(canvas);
+
+        //can display FPS and UPS by uncommenting below lines
+        /*
         drawUPS(canvas);
         drawFPS(canvas);
+         */
+
         this.player.draw(canvas);
         this.joystick.draw(canvas);
         this.enemy.draw(canvas);
+
+        //GAME OVER
+        if(player.getHealth() <= 0) {
+            gameOver.draw(canvas);
+        }
     }
+
+    //CONSTANTLY UPDATE STATUS OF GAME
+    public void update() {
+        //STOP GAME WHEN GAME OVER
+        if(player.getHealth() <= 0) {
+            return; //stop updating
+        }
+
+        joystick.update();
+        player.update();
+        enemy.update();
+    }
+
+    //NOTE: the below functions are to display the FPS and UPS for testing
     public void drawUPS(Canvas canvas) {
         String averageUPS = Double.toString(gameLoop.getAverageUPS());
         Paint paint = new Paint();
@@ -92,11 +124,5 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
         paint.setColor(color);
         paint.setTextSize(50);
         canvas.drawText( "FPS: " + averageFPS, 100, 200, paint);
-    }
-
-    public void update() {
-        joystick.update();
-        player.update();
-        enemy.update();
     }
 }

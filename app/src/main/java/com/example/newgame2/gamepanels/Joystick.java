@@ -1,4 +1,4 @@
-package com.example.newgame2;
+package com.example.newgame2.gamepanels;
 
 import android.graphics.Canvas;
 import android.graphics.Color;

@@ -1,4 +1,4 @@
-package com.example.newgame2;
+package com.example.newgame2.gameobjects;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -7,10 +7,15 @@ import android.graphics.Canvas;
 import android.graphics.Rect;
 import android.util.Log;
 
+import com.example.newgame2.GameLoop;
+import com.example.newgame2.gamepanels.Joystick;
+import com.example.newgame2.R;
+import com.example.newgame2.gamepanels.HealthBar;
+
 //MAIN CHARACTER OF GAME, PLAYER IS EXTENSION OF GameObject
-public class Player extends GameObject{
+public class Player extends GameObject {
     public static final int MAX_HEALTH = 10;    //MAX HP
-    private static final double max_speed = 400.0/GameLoop.MAX_UPS; //pixels per second/max_UPS
+    private static final double max_speed = 400.0/ GameLoop.MAX_UPS; //pixels per second/max_UPS
     private final Joystick joystick;
     private Bitmap playerBitmap; //this stores images
     private Rect playerRect;
