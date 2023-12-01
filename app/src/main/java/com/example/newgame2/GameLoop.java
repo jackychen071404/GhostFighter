@@ -4,7 +4,7 @@ import android.graphics.Canvas;
 import android.view.SurfaceHolder;
 
 public class GameLoop extends Thread {
-    private static final double MAX_UPS = 30.0; //determine our ideal UPS
+    public static final double MAX_UPS = 30.0; //determine our ideal UPS
     private static final double UPS_PERIOD = 1000/MAX_UPS; //the inverse of frequency, every millisecond
     private Game game;
     private SurfaceHolder surfaceHolder;
