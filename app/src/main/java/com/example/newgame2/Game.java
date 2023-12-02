@@ -15,10 +15,15 @@ import com.example.newgame2.gameobjects.Player;
 import com.example.newgame2.gamepanels.GameOver;
 import com.example.newgame2.gamepanels.Joystick;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
 public class Game extends SurfaceView implements SurfaceHolder.Callback {
     private final Player player;
     private final Joystick joystick;
-    private final Enemy enemy;
+    //private final Enemy enemy;
+    private List<Enemy> enemyList = new ArrayList<Enemy>();
     private GameLoop gameLoop;
     private Context context;
     private GameOver gameOver;
@@ -38,7 +43,7 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
 
         //initialize game objects
         this.player = new Player(getContext(),joystick,0,0);
-        this.enemy = new Enemy(getContext(),player,0,0);
+        //this.enemy = new Enemy(getContext(),player,0,0);
 
         setFocusable(true); //events are dispatched to the focused component
     }
@@ -86,7 +91,9 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
 
         this.player.draw(canvas);
         this.joystick.draw(canvas);
-        this.enemy.draw(canvas);
+        for(Enemy enemy: enemyList) {
+            enemy.draw(canvas);
+        }
 
         //GAME OVER
         if(player.getHealth() <= 0) {
@@ -101,9 +108,26 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
             return; //stop updating
         }
 
+        //update
         joystick.update();
         player.update();
-        enemy.update();
+
+        //spawn&update enemies
+        if(Enemy.spawn()) {
+            enemyList.add(new Enemy(getContext(), player, 0, 0)); //infinite enemy spawn at this location
+        }
+        for(Enemy enemy : enemyList) {
+            enemy.update();
+        }
+
+        //check for collision with player
+        Iterator<Enemy> enemyIterator = enemyList.iterator();
+        while (enemyIterator.hasNext()) {
+            if ((enemyIterator.next()).touching(player)) {
+                enemyIterator.remove();     //remove enemy if touching player
+                player.setHealth((int) (player.getHealth() - 1));
+            }
+        }
     }
 
     //NOTE: the below functions are to display the FPS and UPS for testing
