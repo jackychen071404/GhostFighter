@@ -47,8 +47,8 @@ public class Enemy extends GameObject {
     }
 
     //checks if enemy is touching player
-    public boolean touching(Player player) {
-        if(getDistance(this, player) <= 5)  //leave some room for glitches so 5 instead of 0
+    public boolean touching(GameObject a) {
+        if(getDistance(this, a) <= 5)  //leave some room for glitches so 5 instead of 0
             return true;
         return false;
     }
