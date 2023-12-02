@@ -24,6 +24,8 @@ public abstract class GameObject {
     public abstract void update();
 
     //
-    protected double getX() {return x;}
-    protected double getY() {return y;}
+    public double getX() {return x;}
+    public double getY() {return y;}
+    public double getVelocityX() {return velocityX;}
+    public double getVelocityY() {return velocityY;}
 }
