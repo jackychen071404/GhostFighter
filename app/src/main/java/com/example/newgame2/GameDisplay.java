@@ -1,8 +1,11 @@
 package com.example.newgame2;
 
+import android.graphics.Rect;
+
 import com.example.newgame2.gameobjects.GameObject;
 
 public class GameDisplay {
+    public final Rect SCREEN_SIZE;
     private double gameToDisplayXDifference;
     private double gameToDisplayYDifference;
     private double displayCenterX;
@@ -13,6 +16,7 @@ public class GameDisplay {
 
     public GameDisplay(int width, int height, GameObject centerObject) {
         this.centerObject = centerObject;
+        SCREEN_SIZE = new Rect(0,0,width,height);
 
         displayCenterX = width/2;
         displayCenterY = height/2;
@@ -32,5 +36,9 @@ public class GameDisplay {
 
     public double gameToDisplayY(double y) {
         return y + gameToDisplayYDifference;
+    }
+
+    public Rect getScreenSize() {
+        return new Rect((int) (gameCenterX - displayCenterX), (int)(gameCenterY - displayCenterY), (int)(gameCenterX + displayCenterX), (int)(gameCenterY + displayCenterY));
     }
 }

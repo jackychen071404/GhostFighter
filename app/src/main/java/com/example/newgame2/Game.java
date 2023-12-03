@@ -17,6 +17,7 @@ import com.example.newgame2.gameobjects.Enemy;
 import com.example.newgame2.gameobjects.Player;
 import com.example.newgame2.gamepanels.GameOver;
 import com.example.newgame2.gamepanels.Joystick;
+import com.example.newgame2.map.Tilemap;
 import com.example.newgame2.spritesAndGraphics.SpriteSheet;
 
 import java.util.ArrayList;
@@ -34,6 +35,7 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
     private int joystickPointerId = 0;
     private int numAttack = 0;
     private GameDisplay gameDisplay;
+    private final Tilemap tilemap;
 
     public Game(Context context) {
         super(context);
@@ -56,6 +58,9 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
         DisplayMetrics displayMetrics = new DisplayMetrics();
         ((Activity) getContext()).getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
         gameDisplay = new GameDisplay(displayMetrics.widthPixels, displayMetrics.heightPixels, player);
+
+        //initialize map
+        tilemap = new Tilemap(spriteSheet);
 
         setFocusable(true); //events are dispatched to the focused component
     }
@@ -115,21 +120,25 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
     public void draw(Canvas canvas) {
         super.draw(canvas);
 
+        //draw map
+        tilemap.draw(canvas,gameDisplay);
+
         //can display FPS and UPS by uncommenting below lines
         /*
         drawUPS(canvas);
         drawFPS(canvas);
          */
+
         this.joystick.draw(canvas);
 
         //draw game objects
-        this.player.draw(canvas, gameDisplay);
         for(Enemy enemy: enemyList) {
             enemy.draw(canvas, gameDisplay);
         }
         for(Attack attack: attackList) {
             attack.draw(canvas, gameDisplay);
         }
+        this.player.draw(canvas, gameDisplay);
 
         //GAME OVER
         if(player.getHealth() <= 0) {
