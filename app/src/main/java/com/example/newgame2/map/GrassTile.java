@@ -6,6 +6,7 @@ import android.graphics.Rect;
 import com.example.newgame2.spritesAndGraphics.Sprite;
 import com.example.newgame2.spritesAndGraphics.SpriteSheet;
 
+//extends tile, make a grass tile
 public class GrassTile extends Tile {
     private final Sprite sprite;
 

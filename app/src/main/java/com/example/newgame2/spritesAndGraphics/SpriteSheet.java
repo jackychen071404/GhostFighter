@@ -17,10 +17,12 @@ public class SpriteSheet {
         bitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.sprite_sheet, bitmapOptions);
     }
 
+    //for player
     public Sprite getPlayerSprite() {
         return new Sprite(this, new Rect(0,0,64,64));
     }
 
+    //for enemy
     public Sprite getEnemySprite() {
         return new Sprite(this, new Rect(64,0,128,64));
     }
@@ -29,6 +31,7 @@ public class SpriteSheet {
         return bitmap;
     }
 
+    //return right tile block for the tile classes
     public Sprite getDesertSprite() {return new Sprite(this, new Rect(0,64,64,128));}
 
     public Sprite getLavaSprite() {return new Sprite(this, new Rect(64,64,128,128));}

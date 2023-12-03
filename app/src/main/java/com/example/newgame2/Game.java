@@ -38,8 +38,8 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
     private final Tilemap tilemap;
     private int screenWidth;
     private int screenHeight;
-    private int enemyDeathCount = 0;
-    private int enemySpawnCount = 0;
+    private int enemyDeathCount = 0;    //counter to know when to change speed
+    private int enemySpawnCount = 0;    //counter for score
 
     public Game(Context context) {
         super(context);
@@ -75,6 +75,7 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
     }
 
     @Override
+    //for whenever screen is touched
     public boolean onTouchEvent(MotionEvent event) {
         switch(event.getActionMasked()) {
             case MotionEvent.ACTION_DOWN:
@@ -113,6 +114,7 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
     }
     @Override
     public void surfaceCreated(SurfaceHolder holder) {
+        //to avoid crash when app is exited
         if(gameLoop.getState().equals(Thread.State.TERMINATED)) {
             gameLoop = new GameLoop(this, holder);
         }
@@ -138,6 +140,7 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
         drawFPS(canvas);
          */
 
+        //draw in joystick
         this.joystick.draw(canvas);
 
         //draw game objects
@@ -174,6 +177,7 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
 
         //spawn&update enemies
         if(Enemy.spawn()) {
+            //counter for score
             enemySpawnCount++;
 
             SpriteSheet spriteSheet = new SpriteSheet(context);

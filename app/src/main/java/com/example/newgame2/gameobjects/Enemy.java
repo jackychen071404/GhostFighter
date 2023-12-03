@@ -7,7 +7,7 @@ import com.example.newgame2.GameDisplay;
 import com.example.newgame2.GameLoop;
 import com.example.newgame2.spritesAndGraphics.Sprite;
 
-//Enemy is an extension of GameObject
+//Enemy is an extension of GameObject, sprite that goes to towards player to cause damage
 public class Enemy extends GameObject {
     private static final int SPEED_CHANGE = 50; //speed enemy changes by as game goes on
     private static int speed = 200;

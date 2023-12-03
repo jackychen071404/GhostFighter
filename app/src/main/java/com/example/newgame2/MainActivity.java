@@ -26,6 +26,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(game);
     }
 
+    //THIS CODE IS TO MAKE IT SO THAT THE GAME AUTOMATICALLY PAUSES WHENEVER APP MINIMIZED
     @Override
     protected void onStart() {
       super.onStart();
@@ -36,6 +37,7 @@ public class MainActivity extends AppCompatActivity {
         super.onResume();
     }
 
+    //pause
     @Override
     protected void onPause() {
         game.pause();
@@ -54,6 +56,6 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        //make sure nothing happens when back button pressed
+        //do nothing to make sure nothing happens when back button pressed
     }
 }

@@ -13,7 +13,7 @@ import com.example.newgame2.gamepanels.HealthBar;
 public class Player extends GameObject {
     public static final int MAX_HEALTH = 10;    //MAX HP
     private static final double max_speed = 400.0/ GameLoop.MAX_UPS; //pixels per second/max_UPS
-    private final Joystick joystick;
+    private final Joystick joystick;    //joystick
     private HealthBar healthBar;    //healthbar
     private int health;     //health points of character
     private Sprite sprite;  //stores image
@@ -21,7 +21,7 @@ public class Player extends GameObject {
     public Player(Context context, Joystick joystick, int x, int y, Sprite sprite) {
         super(x, y);
         this.joystick = joystick;
-        this.healthBar = new HealthBar(this);
+        this.healthBar = new HealthBar(this);   //make healthbar
         this.health = MAX_HEALTH;   //set starting HP to MAX
         this.sprite = sprite;
     }
@@ -38,8 +38,8 @@ public class Player extends GameObject {
         //set new position
         this.setPosition(x,y);
 
-        //if player touching lava (out of bounds), die instantly
-        if(x<64 || x>50*64 || y<64 || y>50*64) {
+        //COLLISION: if player touching lava (out of bounds), die instantly (game over)
+        if(x<64 || x>49*64 || y<64 || y>49*64) {
             this.setHealth(0);  // die >:(
         }
     }
@@ -49,6 +49,8 @@ public class Player extends GameObject {
         this.y = y;
     }
 
+
+    //player is drawn to center of screen
     public void draw(Canvas canvas, GameDisplay gameDisplay) {
         sprite.draw(canvas,
                 (int) gameDisplay.gameToDisplayX(getX() - sprite.getWidth()/2),
@@ -56,10 +58,12 @@ public class Player extends GameObject {
         healthBar.draw(canvas, gameDisplay);
     }
 
+    //return health
     public float getHealth() {
         return health;
     }
 
+    //set health
     public void setHealth(int hp) {
         //no negative health!
         if(hp >= 0)

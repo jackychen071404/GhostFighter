@@ -12,6 +12,7 @@ import android.graphics.Rect;
 import com.example.newgame2.GameDisplay;
 import com.example.newgame2.spritesAndGraphics.SpriteSheet;
 
+//this class makes the map
 public class Tilemap {
     private final MapLayout mapLayout;
     private Tile[][] tilemap;
@@ -33,7 +34,7 @@ public class Tilemap {
             }
         }
         
-        Bitmap.Config config = Bitmap.Config.ARGB_8888;     //quality of map image
+        Bitmap.Config config = Bitmap.Config.ARGB_8888;  //quality of map image
         mapBitmap = Bitmap.createBitmap(COLUMNS*TILE_WIDTH_PIXELS, ROWS*TILE_HEIGHT_PIXELS, config);
 
         Canvas mapCanvas = new Canvas(mapBitmap);

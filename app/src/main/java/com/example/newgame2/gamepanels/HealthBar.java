@@ -11,8 +11,8 @@ import com.example.newgame2.gameobjects.Player;
 public class HealthBar {
 
     private Player player;
-    private int width, height, margin;
-    private Paint borderPaint, healthPaint;
+    private int width, height, margin;  //size of health bar
+    private Paint borderPaint, healthPaint; //color the bar and the border
 
     public HealthBar(Player player) {
         this.player = player;
@@ -22,7 +22,7 @@ public class HealthBar {
         this.height = 30;
         this.margin = 5;
 
-        //set health bar color here
+        //set health bar color + border color here
         this.borderPaint = new Paint();
         this.healthPaint = new Paint();
         borderPaint.setColor(Color.WHITE);
@@ -34,6 +34,7 @@ public class HealthBar {
         float x = 1900;
         float y = 30;
 
+        //calculate hp percent left to fill up bar that much
         float HP_Percent = (float) player.getHealth()/player.MAX_HEALTH;
 
         //border of health bar

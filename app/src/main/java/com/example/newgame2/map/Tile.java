@@ -16,11 +16,12 @@ abstract class Tile {
         DESERT,   //0
         LAVA, //1
         GRASS,   //2
-        WATER   //4
+        WATER   //3
     }
 
     public static Tile getTile(int type, SpriteSheet spriteSheet, Rect mapLocation) {
        switch(TileType.values()[type]) {
+           //create the tile based on their respective 0,1,2,3
            case DESERT:
                return new DesertTile(spriteSheet, mapLocation);
            case LAVA:
@@ -30,6 +31,7 @@ abstract class Tile {
            case WATER:
                return new WaterTile(spriteSheet, mapLocation);
            default:
+               //if not 0,1,2,3 then default to null to avoid errors
                return null;
        }
     }

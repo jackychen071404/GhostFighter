@@ -3,6 +3,7 @@ package com.example.newgame2.spritesAndGraphics;
 import android.graphics.Canvas;
 import android.graphics.Rect;
 
+//sprite class for sprites based on the sprite_sheet
 public class Sprite {
 
     private final SpriteSheet spriteSheet;

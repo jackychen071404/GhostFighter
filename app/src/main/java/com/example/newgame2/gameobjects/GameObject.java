@@ -25,7 +25,7 @@ public abstract class GameObject {
     public abstract void draw(Canvas canvas, GameDisplay gameDisplay);
     public abstract void update();
 
-    //
+    //get
     public double getX() {return x;}
     public double getY() {return y;}
     public double getVelocityX() {return velocityX;}

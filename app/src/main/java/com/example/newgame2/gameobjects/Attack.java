@@ -10,10 +10,11 @@ import com.example.newgame2.gameobjects.Enemy;
 import com.example.newgame2.gameobjects.GameObject;
 import com.example.newgame2.gameobjects.Player;
 
+//class attack extends gameobject and makes a circle around player destroying enemies
 public class Attack extends GameObject {
     private final Player player;
-    private Paint paint;
-    private int radius;
+    private Paint paint;    //for color of attack
+    private int radius; //for size of attack
     private static final double DESPAWN_FREQUENCY = 10;  //CHANGE ATTACK DESPAWN RATE
     private static final double UPDATES_UNTIL_DESPAWN = GameLoop.MAX_UPS/DESPAWN_FREQUENCY;
     private static double nextDespawn = UPDATES_UNTIL_DESPAWN;
@@ -42,6 +43,7 @@ public class Attack extends GameObject {
         }
     }
 
+    //check if attack is touching another game object (like enemy)
     public boolean touching(GameObject a) {
         if(getDistance(this, a) <= 5+radius)  //leave some room for glitches so 5 instead of 0
             return true;
@@ -49,7 +51,7 @@ public class Attack extends GameObject {
     }
 
     public void draw(Canvas canvas, GameDisplay gameDisplay) {
-        //size of attack around player, convert so that player centered
+        //size of attack around player, convert so relative to player centered screen
         canvas.drawCircle(
                 (float) gameDisplay.gameToDisplayX(player.getX()),
                 (float) gameDisplay.gameToDisplayY(player.getY()),
