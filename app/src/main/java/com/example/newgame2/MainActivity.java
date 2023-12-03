@@ -1,14 +1,18 @@
 package com.example.newgame2;
 
 import androidx.appcompat.app.AppCompatActivity;
+
+import android.animation.Animator;
 import android.os.Bundle;
 import android.view.Window;
 import android.view.WindowManager;
 
 public class MainActivity extends AppCompatActivity {
-/*
-Main entry point of applicataion
-  */  @Override
+    private Game game;
+
+    /*
+    Main entry point of applicataion
+      */  @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
@@ -16,7 +20,40 @@ Main entry point of applicataion
         Window window = getWindow();
         window.setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        //Set content view to game for rendering
-        setContentView(new Game(this));
+
+        //set content view to game for rendering
+        game = new Game(this);
+        setContentView(game);
+    }
+
+    @Override
+    protected void onStart() {
+      super.onStart();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+    }
+
+    @Override
+    protected void onPause() {
+        game.pause();
+        super.onPause();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+    }
+
+    @Override
+    public void onBackPressed() {
+        //make sure nothing happens when back button pressed
     }
 }

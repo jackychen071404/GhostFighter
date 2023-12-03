@@ -88,6 +88,9 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
     }
     @Override
     public void surfaceCreated(SurfaceHolder holder) {
+        if(gameLoop.getState().equals(Thread.State.TERMINATED)) {
+            gameLoop = new GameLoop(this, holder);
+        }
         gameLoop.startLoop();
     }
 
@@ -194,5 +197,9 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
         paint.setColor(color);
         paint.setTextSize(50);
         canvas.drawText( "FPS: " + averageFPS, 100, 200, paint);
+    }
+
+    public void pause() {
+        gameLoop.stopLoop();
     }
 }
