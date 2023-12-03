@@ -35,4 +35,6 @@ public class SpriteSheet {
 
     public Sprite getGrassSprite() {return new Sprite(this, new Rect(128,64,192,128));}
 
+    public Sprite getWaterSprite() {return new Sprite(this, new Rect(192, 64, 256, 128));}
+
 }

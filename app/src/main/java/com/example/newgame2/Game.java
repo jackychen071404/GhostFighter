@@ -62,8 +62,8 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
 
         //initialize game objects
         SpriteSheet spriteSheet = new SpriteSheet(context);
-        //player spawn location center of screen
-        this.player = new Player(getContext(),joystick,screenWidth/2,screenHeight/2, spriteSheet.getPlayerSprite());
+        //player spawn location center of map
+        this.player = new Player(getContext(),joystick,25*64,25*64, spriteSheet.getPlayerSprite());
 
         //initialize game display
         gameDisplay = new GameDisplay(screenWidth, screenHeight, player);

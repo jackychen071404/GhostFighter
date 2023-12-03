@@ -15,7 +15,8 @@ abstract class Tile {
     public enum TileType {
         DESERT,   //0
         LAVA, //1
-        GRASS   //2
+        GRASS,   //2
+        WATER   //4
     }
 
     public static Tile getTile(int type, SpriteSheet spriteSheet, Rect mapLocation) {
@@ -26,6 +27,8 @@ abstract class Tile {
                return new LavaTile(spriteSheet, mapLocation);
            case GRASS:
                return new GrassTile(spriteSheet, mapLocation);
+           case WATER:
+               return new WaterTile(spriteSheet, mapLocation);
            default:
                return null;
        }
