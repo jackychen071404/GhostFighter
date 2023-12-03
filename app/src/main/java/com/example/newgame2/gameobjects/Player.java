@@ -37,6 +37,11 @@ public class Player extends GameObject {
 
         //set new position
         this.setPosition(x,y);
+
+        //if player touching lava (out of bounds), die instantly
+        if(x<64 || x>50*64 || y<64 || y>50*64) {
+            this.setHealth(0);  // die >:(
+        }
     }
 
     public void setPosition(double x, double y) {

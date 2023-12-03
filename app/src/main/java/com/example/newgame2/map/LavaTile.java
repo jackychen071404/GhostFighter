@@ -12,7 +12,6 @@ public class LavaTile extends Tile {
     public LavaTile(SpriteSheet spriteSheet, Rect mapLocation) {
         super(mapLocation);
         sprite = spriteSheet.getLavaSprite();
-
     }
 
     @Override
