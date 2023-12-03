@@ -9,17 +9,27 @@ import com.example.newgame2.spritesAndGraphics.Sprite;
 
 //Enemy is an extension of GameObject
 public class Enemy extends GameObject {
-    private static final double max_speed = 200.0/ GameLoop.MAX_UPS; //pixels per second/max_UPS
+    private static final int SPEED_CHANGE = 50; //speed enemy changes by as game goes on
+    private static int speed = 200;
+    private static double finalSpeed;
     private static final double SPAWNS_PER_MIN = 20;
     private static final double UPDATES_UNTIL_SPAWN = GameLoop.MAX_UPS/(SPAWNS_PER_MIN/60);
     private static double nextSpawn = UPDATES_UNTIL_SPAWN;
     private final Player player;    //to use as reference for Player distance
     private Sprite sprite;  //stores image
 
-    public Enemy(Context context, Player player, int x, int y, Sprite sprite) {
+    public Enemy(Context context, Player player, int x, int y, Sprite sprite, int spawnCount) {
         super(x, y);
         this.player = player;
         this.sprite = sprite;
+
+        //increase speed for every 10 enemies that have spawned
+        int speedChange = spawnCount/10;
+        for(int i = 0; i<speedChange; i++)
+        {
+            speed+=SPEED_CHANGE;
+        }
+        this.finalSpeed = speed/ GameLoop.MAX_UPS; //pixels per second/max_UPS
     }
 
     //check if new enemy should spawn
@@ -36,7 +46,7 @@ public class Enemy extends GameObject {
 
     //checks if enemy is touching player
     public boolean touching(GameObject a) {
-        if(getDistance(this, a) <= 5)  //leave some room for glitches so 5 instead of 0
+        if(getDistance(this, a) <= 64)  //leave some room for glitches so 64 instead of 0
             return true;
         return false;
     }
@@ -59,8 +69,8 @@ public class Enemy extends GameObject {
 
         //set velocity, make sure velocity 0 when same position
         if(distancePlayer > 0) {
-            velocityX = directionX*max_speed;
-            velocityY = directionY*max_speed;
+            velocityX = directionX*finalSpeed;
+            velocityY = directionY*finalSpeed;
         }
         else {
             velocityX = 0;

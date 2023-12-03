@@ -8,16 +8,15 @@ import android.graphics.Paint;
 public class GameOver {
     public GameOver() {}
 
-    public void draw(Canvas canvas){
-        String text = "Game Over";
-
-        float x = 800;
-        float y = 200;
-        float textSize = 150;
+    public void draw(Canvas canvas, int enemyDeathCount){
+        String gg = "Game Over";
+        String deaths = "Your score was " + enemyDeathCount;
 
         Paint paint = new Paint();
         paint.setColor(Color.RED);
-        paint.setTextSize(textSize);
-        canvas.drawText(text, x, y, paint);
+        paint.setTextSize(150);
+        canvas.drawText(gg, 500, 200, paint);
+        paint.setColor(Color.WHITE);
+        canvas.drawText(deaths, 500, 400, paint);
     }
 }

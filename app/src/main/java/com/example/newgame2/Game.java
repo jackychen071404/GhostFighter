@@ -36,6 +36,10 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
     private int numAttack = 0;
     private GameDisplay gameDisplay;
     private final Tilemap tilemap;
+    private int screenWidth;
+    private int screenHeight;
+    private int enemyDeathCount = 0;
+    private int enemySpawnCount = 0;
 
     public Game(Context context) {
         super(context);
@@ -46,18 +50,23 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
         this.context = context;
         this.gameLoop = new GameLoop(this, surfaceHolder);
 
+        //display metrics
+        DisplayMetrics displayMetrics = new DisplayMetrics();
+        ((Activity) getContext()).getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+        screenWidth = displayMetrics.widthPixels;
+        screenHeight = displayMetrics.heightPixels;
+
         //initialize game panels (for UI)
         this.gameOver = new GameOver();
         this.joystick = new Joystick(200,900,70,40);
 
         //initialize game objects
         SpriteSheet spriteSheet = new SpriteSheet(context);
-        this.player = new Player(getContext(),joystick,0,0, spriteSheet.getPlayerSprite());
+        //player spawn location center of screen
+        this.player = new Player(getContext(),joystick,screenWidth/2,screenHeight/2, spriteSheet.getPlayerSprite());
 
         //initialize game display
-        DisplayMetrics displayMetrics = new DisplayMetrics();
-        ((Activity) getContext()).getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
-        gameDisplay = new GameDisplay(displayMetrics.widthPixels, displayMetrics.heightPixels, player);
+        gameDisplay = new GameDisplay(screenWidth, screenHeight, player);
 
         //initialize map
         tilemap = new Tilemap(spriteSheet);
@@ -81,7 +90,7 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
                 }
                 else {
                     //joystick not pressed -> attack
-                    attackList.add(new Attack(player));
+                    numAttack++;
                 }
                 return true; //event has been handled
             case MotionEvent.ACTION_MOVE:
@@ -142,7 +151,7 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
 
         //GAME OVER
         if(player.getHealth() <= 0) {
-            gameOver.draw(canvas);
+            gameOver.draw(canvas, enemyDeathCount);
         }
     }
 
@@ -157,14 +166,21 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
         joystick.update();
         player.update();
 
-        //spawn&update enemies
+        //when click -> numattack++, attack spawns, numattack--;
         while(numAttack > 0) {
             attackList.add(new Attack(player));
             numAttack--;
         }
+
+        //spawn&update enemies
         if(Enemy.spawn()) {
+            enemySpawnCount++;
+
             SpriteSheet spriteSheet = new SpriteSheet(context);
-            enemyList.add(new Enemy(getContext(), player, 0, 0, spriteSheet.getEnemySprite())); //infinite enemy spawn at this location
+            enemyList.add(new Enemy(getContext(), player,
+                    (int) (Math.random()*screenWidth),
+                    (int) (Math.random()*screenHeight),   //infinite enemy spawn at random location on screen
+                    spriteSheet.getEnemySprite(), enemySpawnCount));
         }
         for(Enemy enemy : enemyList) {
             enemy.update();
@@ -195,6 +211,7 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
                 //if collide
                 if(attack.touching(enemy)) {
                     enemyIterator.remove(); //remove enemy because die if touch attack
+                    enemyDeathCount++;
                     break;
                 }
             }
@@ -212,7 +229,7 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
         paint.setColor(color);
         paint.setTextSize(50);
         canvas.drawText( "UPS: " + averageUPS, 100, 100, paint);
-        Bitmap playerBitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.box);
+        Bitmap playerBitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.sprite_sheet);
         canvas.drawText("getWidth " + playerBitmap.getHeight(), 100,300,paint);
     }
     public void drawFPS(Canvas canvas) {
