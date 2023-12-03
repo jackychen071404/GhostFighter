@@ -1,19 +1,23 @@
 package com.example.newgame2;
 
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Paint;
+import android.util.DisplayMetrics;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import androidx.core.content.ContextCompat;
 
+import com.example.newgame2.gameobjects.Attack;
 import com.example.newgame2.gameobjects.Enemy;
 import com.example.newgame2.gameobjects.Player;
 import com.example.newgame2.gamepanels.GameOver;
 import com.example.newgame2.gamepanels.Joystick;
+import com.example.newgame2.spritesAndGraphics.SpriteSheet;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -29,6 +33,7 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
     private GameOver gameOver;
     private int joystickPointerId = 0;
     private int numAttack = 0;
+    private GameDisplay gameDisplay;
 
     public Game(Context context) {
         super(context);
@@ -44,7 +49,13 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
         this.joystick = new Joystick(200,900,70,40);
 
         //initialize game objects
-        this.player = new Player(getContext(),joystick,0,0);
+        SpriteSheet spriteSheet = new SpriteSheet(context);
+        this.player = new Player(getContext(),joystick,0,0, spriteSheet.getPlayerSprite());
+
+        //initialize game display
+        DisplayMetrics displayMetrics = new DisplayMetrics();
+        ((Activity) getContext()).getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+        gameDisplay = new GameDisplay(displayMetrics.widthPixels, displayMetrics.heightPixels, player);
 
         setFocusable(true); //events are dispatched to the focused component
     }
@@ -109,14 +120,15 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
         drawUPS(canvas);
         drawFPS(canvas);
          */
-
-        this.player.draw(canvas);
         this.joystick.draw(canvas);
+
+        //draw game objects
+        this.player.draw(canvas, gameDisplay);
         for(Enemy enemy: enemyList) {
-            enemy.draw(canvas);
+            enemy.draw(canvas, gameDisplay);
         }
         for(Attack attack: attackList) {
-            attack.draw(canvas);
+            attack.draw(canvas, gameDisplay);
         }
 
         //GAME OVER
@@ -142,7 +154,8 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
             numAttack--;
         }
         if(Enemy.spawn()) {
-            enemyList.add(new Enemy(getContext(), player, 0, 0)); //infinite enemy spawn at this location
+            SpriteSheet spriteSheet = new SpriteSheet(context);
+            enemyList.add(new Enemy(getContext(), player, 0, 0, spriteSheet.getEnemySprite())); //infinite enemy spawn at this location
         }
         for(Enemy enemy : enemyList) {
             enemy.update();
@@ -177,6 +190,9 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
                 }
             }
         }
+
+        //update display
+        gameDisplay.update();
     }
 
     //NOTE: the below functions are to display the FPS and UPS for testing
@@ -187,7 +203,7 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
         paint.setColor(color);
         paint.setTextSize(50);
         canvas.drawText( "UPS: " + averageUPS, 100, 100, paint);
-        Bitmap playerBitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.gard);
+        Bitmap playerBitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.box);
         canvas.drawText("getWidth " + playerBitmap.getHeight(), 100,300,paint);
     }
     public void drawFPS(Canvas canvas) {

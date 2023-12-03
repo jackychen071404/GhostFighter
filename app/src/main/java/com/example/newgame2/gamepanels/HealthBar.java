@@ -4,6 +4,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 
+import com.example.newgame2.GameDisplay;
 import com.example.newgame2.gameobjects.Player;
 
 //HealthBar shows health bar
@@ -28,7 +29,7 @@ public class HealthBar {
         healthPaint.setColor(Color.GREEN);
     }
 
-    public void draw(Canvas canvas) {
+    public void draw(Canvas canvas, GameDisplay gameDisplay) {
         //position of bar on screen (top right corner of bar)
         float x = 1900;
         float y = 30;
@@ -41,7 +42,13 @@ public class HealthBar {
         float borderBottom = y + height;
         float borderTop = y;
 
-        canvas.drawRect(borderLeft,borderTop,borderRight,borderBottom,borderPaint);
+        //note - converting everything so that player is centered
+        canvas.drawRect(
+                (float) borderLeft,
+                (float) borderTop,
+                (float) borderRight,
+                (float) borderBottom,
+                borderPaint);
 
         //the health bar
         float healthLeft = borderLeft + margin;
@@ -49,6 +56,12 @@ public class HealthBar {
         float healthBottom = borderBottom - margin;
         float healthTop = y + margin;
 
-        canvas.drawRect(healthLeft,healthTop,healthRight,healthBottom,healthPaint);
+        //note - converting everything so that player is centered
+        canvas.drawRect(
+                (float) healthLeft,
+                (float) healthTop,
+                (float) healthRight,
+                (float) healthBottom,
+                healthPaint);
     }
 }

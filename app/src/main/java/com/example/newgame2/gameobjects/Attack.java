@@ -1,9 +1,11 @@
-package com.example.newgame2;
+package com.example.newgame2.gameobjects;
 
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 
+import com.example.newgame2.GameDisplay;
+import com.example.newgame2.GameLoop;
 import com.example.newgame2.gameobjects.Enemy;
 import com.example.newgame2.gameobjects.GameObject;
 import com.example.newgame2.gameobjects.Player;
@@ -40,15 +42,18 @@ public class Attack extends GameObject {
         }
     }
 
-    protected boolean touching(GameObject a) {
+    public boolean touching(GameObject a) {
         if(getDistance(this, a) <= 5+radius)  //leave some room for glitches so 5 instead of 0
             return true;
         return false;
     }
 
-    public void draw(Canvas canvas) {
-        //size of attack around player
-        canvas.drawCircle((float) player.getX(), (float) player.getY(), radius, paint);
+    public void draw(Canvas canvas, GameDisplay gameDisplay) {
+        //size of attack around player, convert so that player centered
+        canvas.drawCircle(
+                (float) gameDisplay.gameToDisplayX(player.getX()),
+                (float) gameDisplay.gameToDisplayY(player.getY()),
+                radius, paint);
     }
 
     @Override
