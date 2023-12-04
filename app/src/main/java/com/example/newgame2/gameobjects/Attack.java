@@ -25,7 +25,7 @@ public class Attack extends GameObject {
 
         //attack color
         paint = new Paint();
-        paint.setColor(Color.WHITE);
+        paint.setColor(Color.YELLOW);
 
         //attack range
         radius = 150;

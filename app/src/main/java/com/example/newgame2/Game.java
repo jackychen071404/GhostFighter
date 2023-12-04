@@ -43,6 +43,7 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
     private int screenHeight;
     private int enemyDeathCount = 0;    //counter to know when to change speed
     private int enemySpawnCount = 0;    //counter for score
+    private int highScore = 0;
 
     public Game(Context context) {
         super(context);
@@ -171,7 +172,7 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
 
         //GAME OVER
         if(player.getHealth() <= 0) {
-            gameOver.draw(canvas, enemyDeathCount);
+            gameOver.draw(canvas, enemyDeathCount, highScore);
             restart.draw(canvas);
             restartIsDrawn = true;
         }
@@ -237,6 +238,9 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
                     if (attack.touching(enemy)) {
                         enemyIterator.remove(); //remove enemy because die if touch attack
                         enemyDeathCount++;
+                        if (enemyDeathCount > highScore) {
+                            highScore = enemyDeathCount;
+                        }
                         break;
                     }
                 }
