@@ -3,6 +3,7 @@ package com.example.newgame2;
 import android.graphics.Canvas;
 import android.view.SurfaceHolder;
 
+//entire game functions on this
 public class GameLoop extends Thread {
     public static final double MAX_UPS = 30.0; //determine our ideal UPS
     private static final double UPS_PERIOD = 1000/MAX_UPS; //the inverse of frequency, every millisecond
@@ -93,6 +94,17 @@ public class GameLoop extends Thread {
                 startTime = System.currentTimeMillis();
             }
 
+        }
+    }
+
+    public void stopLoop() {
+         Running = false;
+         //wait for thread to join
+        try {
+            join();
+        }
+        catch (InterruptedException e) {
+            e.printStackTrace();
         }
     }
 }

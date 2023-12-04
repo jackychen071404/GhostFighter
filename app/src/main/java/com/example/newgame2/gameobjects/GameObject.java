@@ -2,6 +2,8 @@ package com.example.newgame2.gameobjects;
 
 import android.graphics.Canvas;
 
+import com.example.newgame2.GameDisplay;
+
 //GENERAL FOUNDATION FOR ALL OBJECTS IN GAME
 public abstract class GameObject {
     protected double y;
@@ -20,10 +22,10 @@ public abstract class GameObject {
         return Math.sqrt(Math.pow(a.getX()-b.getX(),2) + Math.pow(a.getY()-b.getY(),2));
     }
 
-    public abstract void draw(Canvas canvas);
+    public abstract void draw(Canvas canvas, GameDisplay gameDisplay);
     public abstract void update();
 
-    //
+    //get
     public double getX() {return x;}
     public double getY() {return y;}
     public double getVelocityX() {return velocityX;}

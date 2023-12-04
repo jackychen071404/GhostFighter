@@ -1,39 +1,29 @@
 package com.example.newgame2.gameobjects;
 
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
-import android.graphics.Rect;
-import android.util.Log;
 
+import com.example.newgame2.GameDisplay;
 import com.example.newgame2.GameLoop;
+import com.example.newgame2.spritesAndGraphics.Sprite;
 import com.example.newgame2.gamepanels.Joystick;
-import com.example.newgame2.R;
 import com.example.newgame2.gamepanels.HealthBar;
 
 //MAIN CHARACTER OF GAME, PLAYER IS EXTENSION OF GameObject
 public class Player extends GameObject {
     public static final int MAX_HEALTH = 10;    //MAX HP
     private static final double max_speed = 400.0/ GameLoop.MAX_UPS; //pixels per second/max_UPS
-    private final Joystick joystick;
-    private Bitmap playerBitmap; //this stores images
-    private Rect playerRect;
+    private final Joystick joystick;    //joystick
     private HealthBar healthBar;    //healthbar
     private int health;     //health points of character
+    private Sprite sprite;  //stores image
 
-    public Player(Context context, Joystick joystick, int x, int y) {
+    public Player(Context context, Joystick joystick, int x, int y, Sprite sprite) {
         super(x, y);
         this.joystick = joystick;
-        this.healthBar = new HealthBar(this);
+        this.healthBar = new HealthBar(this);   //make healthbar
         this.health = MAX_HEALTH;   //set starting HP to MAX
-
-        //get the image of the player
-        playerBitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.box);
-        if (playerBitmap == null) {
-            Log.e("Player", "Failed to load player image");
-        }
-        playerRect = new Rect(x, y, x+playerBitmap.getWidth(), y+playerBitmap.getHeight());
+        this.sprite = sprite;
     }
 
     public void update() {
@@ -47,26 +37,40 @@ public class Player extends GameObject {
 
         //set new position
         this.setPosition(x,y);
+
+        //COLLISION: if player touching lava (out of bounds), die instantly (game over)
+        if(x<64 || x>49*64 || y<64 || y>49*64) {
+            this.setHealth(0);  // die >:(
+        }
     }
 
     public void setPosition(double x, double y) {
         this.x = x;
         this.y = y;
-        playerRect.set((int) x, (int) y, (int) (x + playerBitmap.getWidth()), (int) (y + playerBitmap.getHeight()));
     }
 
-    public void draw(Canvas canvas) {
-        canvas.drawBitmap(playerBitmap, null, playerRect, null);
-        healthBar.draw(canvas);
+
+    //player is drawn to center of screen
+    public void draw(Canvas canvas, GameDisplay gameDisplay) {
+        sprite.draw(canvas,
+                (int) gameDisplay.gameToDisplayX(getX() - sprite.getWidth()/2),
+                (int) gameDisplay.gameToDisplayY(getY()) - sprite.getHeight()/2);
+        healthBar.draw(canvas, gameDisplay);
     }
 
+    //return health
     public float getHealth() {
         return health;
     }
 
+    //set health
     public void setHealth(int hp) {
         //no negative health!
         if(hp >= 0)
             this.health = hp;
+    }
+
+    public void setNewHealth(int hp) {
+        this.health = hp;
     }
 }

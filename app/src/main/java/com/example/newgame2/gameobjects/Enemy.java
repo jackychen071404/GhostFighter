@@ -1,37 +1,35 @@
 package com.example.newgame2.gameobjects;
 
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
-import android.graphics.Rect;
-import android.util.Log;
 
+import com.example.newgame2.GameDisplay;
 import com.example.newgame2.GameLoop;
-import com.example.newgame2.R;
+import com.example.newgame2.spritesAndGraphics.Sprite;
 
-import java.util.Iterator;
-
-//Enemy is an extension of GameObject
+//Enemy is an extension of GameObject, sprite that goes to towards player to cause damage
 public class Enemy extends GameObject {
-    private static final double max_speed = 200.0/ GameLoop.MAX_UPS; //pixels per second/max_UPS
+    private static final int SPEED_CHANGE = 100; //speed enemy changes by as game goes on
+    private static int speed;
+    private static double finalSpeed;
     private static final double SPAWNS_PER_MIN = 20;
     private static final double UPDATES_UNTIL_SPAWN = GameLoop.MAX_UPS/(SPAWNS_PER_MIN/60);
     private static double nextSpawn = UPDATES_UNTIL_SPAWN;
     private final Player player;    //to use as reference for Player distance
-    private Bitmap enemyBitmap;     //stores image
-    private Rect enemyRect;
+    private Sprite sprite;  //stores image
 
-    public Enemy(Context context, Player player, int x, int y) {
+    public Enemy(Context context, Player player, int x, int y, Sprite sprite, int enemySpawnCount) {
         super(x, y);
         this.player = player;
+        this.sprite = sprite;
 
-        //enemy image
-        enemyBitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.box);
-        if (enemyBitmap == null) {
-            Log.e("Enemy", "Failed to load enemy image");
+        //increase speed for every 10 enemies that have spawned
+        speed=200;
+        for(int i = 0; i<enemySpawnCount/10; i++)
+        {
+            speed+=SPEED_CHANGE;
         }
-        enemyRect = new Rect(x, y, x+enemyBitmap.getWidth(), y+enemyBitmap.getHeight());
+        this.finalSpeed = speed/ GameLoop.MAX_UPS; //pixels per second/max_UPS
     }
 
     //check if new enemy should spawn
@@ -48,13 +46,15 @@ public class Enemy extends GameObject {
 
     //checks if enemy is touching player
     public boolean touching(GameObject a) {
-        if(getDistance(this, a) <= 5)  //leave some room for glitches so 5 instead of 0
+        if(getDistance(this, a) <= 64)  //leave some room for glitches so 64 instead of 0
             return true;
         return false;
     }
 
-    public void draw(Canvas canvas) {
-        canvas.drawBitmap(enemyBitmap, null, enemyRect, null);
+    public void draw(Canvas canvas, GameDisplay gameDisplay) {
+        sprite.draw(canvas,
+                (int) gameDisplay.gameToDisplayX(getX() - sprite.getWidth()/2),
+                (int) gameDisplay.gameToDisplayY(getY()) - sprite.getHeight()/2);
     }
 
     public void update() {
@@ -69,8 +69,8 @@ public class Enemy extends GameObject {
 
         //set velocity, make sure velocity 0 when same position
         if(distancePlayer > 0) {
-            velocityX = directionX*max_speed;
-            velocityY = directionY*max_speed;
+            velocityX = directionX*finalSpeed;
+            velocityY = directionY*finalSpeed;
         }
         else {
             velocityX = 0;
@@ -88,7 +88,6 @@ public class Enemy extends GameObject {
     public void setPosition(double x, double y) {
         this.x = x;
         this.y = y;
-        enemyRect.set((int) x, (int) y, (int) (x + enemyBitmap.getWidth()), (int) (y + enemyBitmap.getHeight()));
     }
 
 }

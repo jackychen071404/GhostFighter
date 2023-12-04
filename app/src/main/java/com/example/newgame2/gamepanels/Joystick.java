@@ -4,6 +4,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 
+//implementation of joystick on screen and how it interacts with game elements
 public class Joystick {
     private Paint outerPaint;
     private Paint innerPaint;
