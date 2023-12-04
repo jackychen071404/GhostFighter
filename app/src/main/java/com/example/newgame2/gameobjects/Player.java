@@ -69,4 +69,8 @@ public class Player extends GameObject {
         if(hp >= 0)
             this.health = hp;
     }
+
+    public void setNewHealth(int hp) {
+        this.health = hp;
+    }
 }

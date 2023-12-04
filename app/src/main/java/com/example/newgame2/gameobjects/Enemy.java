@@ -9,8 +9,8 @@ import com.example.newgame2.spritesAndGraphics.Sprite;
 
 //Enemy is an extension of GameObject, sprite that goes to towards player to cause damage
 public class Enemy extends GameObject {
-    private static final int SPEED_CHANGE = 50; //speed enemy changes by as game goes on
-    private static int speed = 200;
+    private static final int SPEED_CHANGE = 100; //speed enemy changes by as game goes on
+    private static int speed;
     private static double finalSpeed;
     private static final double SPAWNS_PER_MIN = 20;
     private static final double UPDATES_UNTIL_SPAWN = GameLoop.MAX_UPS/(SPAWNS_PER_MIN/60);
@@ -18,14 +18,14 @@ public class Enemy extends GameObject {
     private final Player player;    //to use as reference for Player distance
     private Sprite sprite;  //stores image
 
-    public Enemy(Context context, Player player, int x, int y, Sprite sprite, int spawnCount) {
+    public Enemy(Context context, Player player, int x, int y, Sprite sprite, int enemySpawnCount) {
         super(x, y);
         this.player = player;
         this.sprite = sprite;
 
         //increase speed for every 10 enemies that have spawned
-        int speedChange = spawnCount/10;
-        for(int i = 0; i<speedChange; i++)
+        speed=200;
+        for(int i = 0; i<enemySpawnCount/10; i++)
         {
             speed+=SPEED_CHANGE;
         }

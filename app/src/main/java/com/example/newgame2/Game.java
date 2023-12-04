@@ -17,6 +17,7 @@ import com.example.newgame2.gameobjects.Enemy;
 import com.example.newgame2.gameobjects.Player;
 import com.example.newgame2.gamepanels.GameOver;
 import com.example.newgame2.gamepanels.Joystick;
+import com.example.newgame2.gamepanels.Restart;
 import com.example.newgame2.map.Tilemap;
 import com.example.newgame2.spritesAndGraphics.SpriteSheet;
 
@@ -32,6 +33,8 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
     private GameLoop gameLoop;
     private Context context;
     private GameOver gameOver;
+    private Restart restart;
+    private boolean restartIsDrawn;
     private int joystickPointerId = 0;
     private int numAttack = 0;
     private GameDisplay gameDisplay;
@@ -59,6 +62,7 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
         //initialize game panels (for UI)
         this.gameOver = new GameOver();
         this.joystick = new Joystick(200,900,70,40);
+        this.restart = new Restart();
 
         //initialize game objects
         SpriteSheet spriteSheet = new SpriteSheet(context);
@@ -77,6 +81,7 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
     @Override
     //for whenever screen is touched
     public boolean onTouchEvent(MotionEvent event) {
+        if(restartIsDrawn)restart.update((double)event.getX(),(double)event.getY());
         switch(event.getActionMasked()) {
             case MotionEvent.ACTION_DOWN:
             case MotionEvent.ACTION_POINTER_DOWN:
@@ -88,6 +93,9 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
                     //joystick pressed & store Id
                     joystickPointerId = event.getPointerId(event.getActionIndex());
                     joystick.setIsPressed(true);
+                }
+                else if (restart.getIsPressed()&&restartIsDrawn) {
+                    restart();
                 }
                 else {
                     //joystick not pressed -> attack
@@ -112,6 +120,15 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
         }
         return super.onTouchEvent(event);
     }
+
+    private void restart() {
+        player.setNewHealth(10);
+        player.setPosition(25*64,25*64);
+        enemySpawnCount = 0;
+        enemyList.clear();
+        enemyDeathCount = 0;
+    }
+
     @Override
     public void surfaceCreated(SurfaceHolder holder) {
         //to avoid crash when app is exited
@@ -155,68 +172,73 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
         //GAME OVER
         if(player.getHealth() <= 0) {
             gameOver.draw(canvas, enemyDeathCount);
+            restart.draw(canvas);
+            restartIsDrawn = true;
         }
     }
 
     //CONSTANTLY UPDATE STATUS OF GAME
     public void update() {
         //STOP GAME WHEN GAME OVER
-        if(player.getHealth() <= 0) {
-            return; //stop updating
-        }
+        //if(player.getHealth() <= 0) {
+        //    return; //stop updating
+        //}
+        if (!(player.getHealth() <= 0)) {
+            restartIsDrawn = false;
 
-        //update
-        joystick.update();
-        player.update();
+            //update
+            joystick.update();
+            player.update();
 
-        //when click -> numattack++, attack spawns, numattack--;
-        while(numAttack > 0) {
-            attackList.add(new Attack(player));
-            numAttack--;
-        }
-
-        //spawn&update enemies
-        if(Enemy.spawn()) {
-            //counter for score
-            enemySpawnCount++;
-
-            SpriteSheet spriteSheet = new SpriteSheet(context);
-            enemyList.add(new Enemy(getContext(), player,
-                    (int) (Math.random()*screenWidth),
-                    (int) (Math.random()*screenHeight),   //infinite enemy spawn at random location on screen
-                    spriteSheet.getEnemySprite(), enemySpawnCount));
-        }
-        for(Enemy enemy : enemyList) {
-            enemy.update();
-        }
-
-        //update attack
-        for(Attack attack : attackList) {
-            attack.update();
-        }
-
-        //check for enemy collision with player/attack
-        Iterator<Enemy> enemyIterator = enemyList.iterator();
-        while (enemyIterator.hasNext()) {
-            Enemy enemy = enemyIterator.next();
-            if (enemy.touching(player)) {
-                enemyIterator.remove();     //remove enemy if touching player
-                player.setHealth((int) (player.getHealth() - 1));
-                continue;
+            //when click -> numattack++, attack spawns, numattack--;
+            while (numAttack > 0) {
+                attackList.add(new Attack(player));
+                numAttack--;
             }
 
-            Iterator<Attack> attackIterator = attackList.iterator();
-            while (attackIterator.hasNext()) {
-                Attack attack = attackIterator.next();
-                //if attack around for despawn time
-                if(attack.despawn()) {
-                    attackIterator.remove();
+            //spawn&update enemies
+            if (Enemy.spawn()) {
+                //counter for score
+                enemySpawnCount++;
+
+                SpriteSheet spriteSheet = new SpriteSheet(context);
+                enemyList.add(new Enemy(getContext(), player,
+                        (int) (Math.random() * screenWidth),
+                        (int) (Math.random() * screenHeight),   //infinite enemy spawn at random location on screen
+                        spriteSheet.getEnemySprite(), enemySpawnCount));
+            }
+            for (Enemy enemy : enemyList) {
+                enemy.update();
+            }
+
+            //update attack
+            for (Attack attack : attackList) {
+                attack.update();
+            }
+
+            //check for enemy collision with player/attack
+            Iterator<Enemy> enemyIterator = enemyList.iterator();
+            while (enemyIterator.hasNext()) {
+                Enemy enemy = enemyIterator.next();
+                if (enemy.touching(player)) {
+                    enemyIterator.remove();     //remove enemy if touching player
+                    player.setHealth((int) (player.getHealth() - 1));
+                    continue;
                 }
-                //if collide
-                if(attack.touching(enemy)) {
-                    enemyIterator.remove(); //remove enemy because die if touch attack
-                    enemyDeathCount++;
-                    break;
+
+                Iterator<Attack> attackIterator = attackList.iterator();
+                while (attackIterator.hasNext()) {
+                    Attack attack = attackIterator.next();
+                    //if attack around for despawn time
+                    if (attack.despawn()) {
+                        attackIterator.remove();
+                    }
+                    //if collide
+                    if (attack.touching(enemy)) {
+                        enemyIterator.remove(); //remove enemy because die if touch attack
+                        enemyDeathCount++;
+                        break;
+                    }
                 }
             }
         }
